@@ -14,16 +14,22 @@ public class BrandController {
 
     private final BrandService brandService;
 
+    @PostMapping("/brands")
+    public ResponseEntity<BrandResponse> createBrand(@Param("name") String name) {
+        BrandResponse brand = brandService.createBrand(name);
+        return ResponseEntity.ok(brand);
+    }
+
     @GetMapping("/brands")
     public ResponseEntity<BrandListResponse> getBrands() {
         BrandListResponse brands = brandService.getBrands();
-        return ResponseEntity.ok().body(brands);
+        return ResponseEntity.ok(brands);
     }
 
     @PutMapping("/brands/{brandId}/name")
     public ResponseEntity<BrandResponse> updateBrandName(@PathVariable Long brandId, @Param("name") String name) {
         BrandResponse brand = brandService.updateBrandName(brandId, name);
-        return ResponseEntity.ok().body(brand);
+        return ResponseEntity.ok(brand);
     }
 
     @DeleteMapping("/brands/{brandId}")

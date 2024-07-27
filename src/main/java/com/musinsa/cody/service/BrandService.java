@@ -16,9 +16,20 @@ public class BrandService {
 
     private final BrandRepository brandRepository;
 
+    public BrandResponse createBrand(String name) {
+        Brand brand = Brand.builder()
+                .name(name)
+                .isActive(false)
+                .isDeleted(false)
+                .totalPrice(0L)
+                .build();
+        Brand savedBrand = brandRepository.save(brand);
+        return BrandResponse.fromEntity(savedBrand);
+    }
+
     public BrandListResponse getBrands() {
-        List<Brand> allByIsDeletedFalse = brandRepository.findAllByIsDeletedFalse();
-        List<BrandListResponse.BrandDto> brandDtoList = allByIsDeletedFalse.stream()
+        List<Brand> brands = brandRepository.findAll();
+        List<BrandListResponse.BrandDto> brandDtoList = brands.stream()
                 .map(BrandListResponse.BrandDto::fromEntity)
                 .toList();
 

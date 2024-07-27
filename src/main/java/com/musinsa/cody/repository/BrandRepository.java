@@ -22,7 +22,7 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
            """)
     Optional<Brand> findMinTotalPriceBrand();
 
-    List<Brand> findAllByIsDeletedFalse();
+    List<Brand> findAll();
 
     @Modifying
     @Transactional

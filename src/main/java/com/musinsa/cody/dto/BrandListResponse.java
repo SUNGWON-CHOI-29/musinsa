@@ -15,16 +15,28 @@ public class BrandListResponse {
     @Getter
     public static class BrandDto {
 
-        public BrandDto(Long id, String name) {
+        public BrandDto(Long id, String name, Long totalPrice, boolean isActive, boolean isDeleted) {
             this.id = id;
             this.name = name;
+            this.totalPrice = totalPrice;
+            this.isActive = isActive;
+            this.isDeleted = isDeleted;
         }
 
         private Long id;
         private String name;
+        private Long totalPrice;
+        private boolean isActive;
+        private boolean isDeleted;
 
         public static BrandDto fromEntity(Brand brand) {
-            return new BrandDto(brand.getId(), brand.getName());
+            return new BrandDto(
+                    brand.getId(),
+                    brand.getName(),
+                    brand.getTotalPrice(),
+                    brand.isActive(),
+                    brand.isDeleted()
+            );
         }
     }
 }
