@@ -15,17 +15,17 @@ public class CodyController {
 
     private final CodyService codyService;
 
-    @GetMapping("/products/categories/min-price")
+    @GetMapping("/cody/categories/min-price")
     public CategoryMinPriceResponse getCategoryMinPriceProducts() {
         return codyService.getCategoryMinPriceProducts();
     }
 
-    @GetMapping("/products/brands/min-price")
+    @GetMapping("/cody/brands/min-price")
     public BrandMinPriceResponse getBrandMinPriceProducts() {
         return codyService.getBrandMinPriceProducts();
     }
 
-    @GetMapping("/products/{categoryId}/price-range")
+    @GetMapping("/cody/{categoryId}/price-range")
     public PriceRangeResponse getCategoryPriceRangeProducts(@PathVariable Long categoryId) {
         return codyService.getCategoryPriceRangeProducts(categoryId);
     }
