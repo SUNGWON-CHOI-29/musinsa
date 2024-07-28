@@ -28,6 +28,7 @@ public class CodyController {
         return ResponseEntity.ok(brandMinPriceProducts);
     }
 
+    // TODO change categoryId to categoryName
     @GetMapping("/cody/{categoryId}/price-range")
     public ResponseEntity<PriceRangeResponse> getCategoryPriceRangeProducts(@PathVariable Long categoryId) {
         PriceRangeResponse categoryPriceRangeProducts = codyService.getCategoryPriceRangeProducts(categoryId);

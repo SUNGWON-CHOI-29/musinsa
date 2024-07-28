@@ -92,5 +92,3 @@ INSERT INTO product (brand_id, category_id, price, is_deleted, created_at, updat
 (9, 6, 1700, false, now(), now()),
 (9, 7, 1700, false, now(), now()),
 (9, 8, 2400, false, now(), now());
-
-

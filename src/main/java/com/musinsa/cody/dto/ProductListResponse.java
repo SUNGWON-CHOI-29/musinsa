@@ -1,0 +1,40 @@
+package com.musinsa.cody.dto;
+
+import com.musinsa.cody.entity.Product;
+import lombok.Builder;
+import lombok.Getter;
+
+import java.util.List;
+
+@Getter
+@Builder
+public class ProductListResponse {
+
+    private List<ProductDto> productDtoList;
+
+    @Getter
+    public static class ProductDto {
+
+        public ProductDto(Long id, String categoryName, String brandName, Long price) {
+            this.id = id;
+            this.categoryName = categoryName;
+            this.brandName = brandName;
+            this.price = price;
+        }
+
+        private Long id;
+        private String categoryName;
+        private String brandName;
+        private Long price;
+
+        public static ProductDto fromEntity(Product product) {
+            return new ProductDto(
+                    product.getId(),
+                    product.getCategory().getName(),
+                    product.getBrand().getName(),
+                    product.getPrice()
+            );
+        }
+    }
+
+}
