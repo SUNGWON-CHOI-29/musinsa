@@ -13,11 +13,13 @@ import com.musinsa.cody.repository.CategoryRepository;
 import com.musinsa.cody.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -26,6 +28,7 @@ public class ProductService {
 
     private final CategoryRepository categoryRepository;
 
+    @Transactional
     public ProductResponse createProduct(ProductRequest request) {
 
         Brand brand = brandRepository.findById(request.getBrandId())
@@ -55,6 +58,7 @@ public class ProductService {
                 .build();
     }
 
+    @Transactional
     public ProductResponse updateProduct(Long productId, ProductRequest request) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new CodyException(CodyErrorResult.PRODUCT_NOT_FOUND));
@@ -69,6 +73,7 @@ public class ProductService {
         return ProductResponse.fromEntity(product);
     }
 
+    @Transactional
     public void deleteProduct(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new CodyException(CodyErrorResult.PRODUCT_NOT_FOUND));

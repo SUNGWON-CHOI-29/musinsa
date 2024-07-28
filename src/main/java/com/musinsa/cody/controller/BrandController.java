@@ -1,8 +1,10 @@
 package com.musinsa.cody.controller;
 
 import com.musinsa.cody.dto.BrandListResponse;
+import com.musinsa.cody.dto.BrandRequest;
 import com.musinsa.cody.dto.BrandResponse;
 import com.musinsa.cody.service.BrandService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +17,8 @@ public class BrandController {
     private final BrandService brandService;
 
     @PostMapping("/brands")
-    public ResponseEntity<BrandResponse> createBrand(@Param("name") String name) {
-        BrandResponse brand = brandService.createBrand(name);
+    public ResponseEntity<BrandResponse> createBrand(@RequestBody @Valid BrandRequest request) {
+        BrandResponse brand = brandService.createBrand(request.getName());
         return ResponseEntity.ok(brand);
     }
 
@@ -27,8 +29,8 @@ public class BrandController {
     }
 
     @PutMapping("/brands/{brandId}/name")
-    public ResponseEntity<BrandResponse> updateBrandName(@PathVariable Long brandId, @Param("name") String name) {
-        BrandResponse brand = brandService.updateBrandName(brandId, name);
+    public ResponseEntity<BrandResponse> updateBrandName(@PathVariable Long brandId, @RequestBody @Valid BrandRequest request) {
+        BrandResponse brand = brandService.updateBrandName(brandId, request.getName());
         return ResponseEntity.ok(brand);
     }
 

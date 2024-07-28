@@ -6,18 +6,20 @@ import com.musinsa.cody.dto.BrandListResponse;
 import com.musinsa.cody.dto.BrandResponse;
 import com.musinsa.cody.entity.Brand;
 import com.musinsa.cody.repository.BrandRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BrandService {
 
     private final BrandRepository brandRepository;
 
+    @Transactional
     public BrandResponse createBrand(String name) {
         Brand brand = Brand.builder()
                 .name(name)
@@ -49,6 +51,7 @@ public class BrandService {
         return BrandResponse.fromEntity(brand);
     }
 
+    @Transactional
     public void deleteBrand(Long brandId) {
         Brand brand = brandRepository.findById(brandId)
                 .orElseThrow(() -> new CodyException(CodyErrorResult.BRAND_NOT_FOUND));
