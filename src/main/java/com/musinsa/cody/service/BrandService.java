@@ -1,14 +1,16 @@
 package com.musinsa.cody.service;
 
+import com.musinsa.cody.common.constant.CodyErrorResult;
+import com.musinsa.cody.common.exception.CodyException;
 import com.musinsa.cody.dto.BrandListResponse;
 import com.musinsa.cody.dto.BrandResponse;
 import com.musinsa.cody.entity.Brand;
 import com.musinsa.cody.repository.BrandRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,14 +40,19 @@ public class BrandService {
                 .build();
     }
 
+    @Transactional
     public BrandResponse updateBrandName(Long brandId, String brandName) {
-        brandRepository.updateNameById(brandId, brandName);
-        Optional<Brand> brand = brandRepository.findById(brandId);
-        return BrandResponse.fromEntity(brand.get());
+        Brand brand = brandRepository.findById(brandId)
+                .orElseThrow(() -> new CodyException(CodyErrorResult.BRAND_NOT_FOUND));
+        brand.changeName(brandName);
+
+        return BrandResponse.fromEntity(brand);
     }
 
     public void deleteBrand(Long brandId) {
-        brandRepository.deleteById(brandId);
+        Brand brand = brandRepository.findById(brandId)
+                .orElseThrow(() -> new CodyException(CodyErrorResult.BRAND_NOT_FOUND));
+        brand.changeIsDeleted(true);
     }
 
 }

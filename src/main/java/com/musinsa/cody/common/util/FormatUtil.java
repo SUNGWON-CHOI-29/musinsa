@@ -1,4 +1,4 @@
-package com.musinsa.cody.util;
+package com.musinsa.cody.common.util;
 
 import java.text.NumberFormat;
 import java.util.Locale;

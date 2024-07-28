@@ -1,12 +1,9 @@
 package com.musinsa.cody.repository;
 
-import com.musinsa.cody.dto.ProductRequest;
 import com.musinsa.cody.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -94,32 +91,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             """)
     Optional<Product> findByMinPriceProductByCategory(@Param("categoryId") Long categoryId);
 
-    @Modifying
-    @Transactional
     @Query("""
-           UPDATE Product p
-           SET  p.category.id   = :#{#request.categoryId},
-                p.brand.id      = :#{#request.brandId},
-                p.price         = :#{#request.price}
-           WHERE p.id = :id
-           """)
-    int updateById(@Param("id") Long id, @Param("request")ProductRequest request);
-
-    @Modifying
-    @Transactional
-    @Query("""
-           UPDATE Product p
-           SET p.isDeleted = true
-           WHERE p.id = :id
-           """)
-    void deleteById(@Param("id") Long id);
-
-    @Query("""
-           SELECT count(p)
-           FROM Product p
-           WHERE p.brand.id = :brandId
-           AND p.isDeleted  = false
-           GROUP BY p.category.id
-           """)
+            SELECT count(p)
+            FROM Product p
+            WHERE p.brand.id = :brandId
+            AND p.isDeleted  = false
+            GROUP BY p.category.id
+            """)
     List<Long> findProductCategoryByBrandId(@Param("brandId") Long brandId);
 }

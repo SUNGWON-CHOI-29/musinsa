@@ -1,10 +1,12 @@
 package com.musinsa.cody.controller;
 
+import com.musinsa.cody.common.constant.CategoryEnum;
 import com.musinsa.cody.dto.BrandMinPriceResponse;
 import com.musinsa.cody.dto.CategoryMinPriceResponse;
 import com.musinsa.cody.dto.PriceRangeResponse;
 import com.musinsa.cody.service.CodyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,9 +30,9 @@ public class CodyController {
         return ResponseEntity.ok(brandMinPriceProducts);
     }
 
-    // TODO change categoryId to categoryName
-    @GetMapping("/cody/{categoryId}/price-range")
-    public ResponseEntity<PriceRangeResponse> getCategoryPriceRangeProducts(@PathVariable Long categoryId) {
+    @GetMapping("/cody/category/price-range")
+    public ResponseEntity<PriceRangeResponse> getCategoryPriceRangeProducts(@Param("name") String categoryName) {
+        Long categoryId = CategoryEnum.getIdByName(categoryName);
         PriceRangeResponse categoryPriceRangeProducts = codyService.getCategoryPriceRangeProducts(categoryId);
         return ResponseEntity.ok(categoryPriceRangeProducts);
     }

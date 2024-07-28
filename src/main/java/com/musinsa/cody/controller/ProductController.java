@@ -4,6 +4,7 @@ import com.musinsa.cody.dto.ProductListResponse;
 import com.musinsa.cody.dto.ProductRequest;
 import com.musinsa.cody.dto.ProductResponse;
 import com.musinsa.cody.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping("/products")
-    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest request) {
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid ProductRequest request) {
         ProductResponse productResponse = productService.createProduct(request);
         return ResponseEntity.ok(productResponse);
     }
@@ -27,7 +28,7 @@ public class ProductController {
     }
 
     @PutMapping("/products/{productId}")
-    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long productId, @RequestBody ProductRequest request) {
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long productId, @RequestBody @Valid ProductRequest request) {
         ProductResponse productResponse = productService.updateProduct(productId, request);
         return ResponseEntity.ok(productResponse);
     }

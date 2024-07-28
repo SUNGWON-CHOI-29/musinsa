@@ -1,5 +1,7 @@
 package com.musinsa.cody.service;
 
+import com.musinsa.cody.common.constant.CodyErrorResult;
+import com.musinsa.cody.common.exception.CodyException;
 import com.musinsa.cody.dto.ProductListResponse;
 import com.musinsa.cody.dto.ProductRequest;
 import com.musinsa.cody.dto.ProductResponse;
@@ -13,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,18 +28,20 @@ public class ProductService {
 
     public ProductResponse createProduct(ProductRequest request) {
 
-        Optional<Brand> brand = brandRepository.findById(request.getBrandId());
-        Optional<Category> category = categoryRepository.findById(request.getCategoryId());
+        Brand brand = brandRepository.findById(request.getBrandId())
+                .orElseThrow(() -> new CodyException(CodyErrorResult.BRAND_NOT_FOUND));
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CodyException(CodyErrorResult.CATEGORY_NOT_FOUND));
 
         Product product = Product.builder()
                 .price(request.getPrice())
-                .brand(brand.get())
-                .category(category.get())
+                .brand(brand)
+                .category(category)
                 .isDeleted(false)
                 .build();
 
         Product saveProduct = productRepository.save(product);
-        updateBrandInfo(brand.get().getId());
+        updateBrandInfo(brand);
         return ProductResponse.fromEntity(saveProduct);
     }
 
@@ -53,31 +56,39 @@ public class ProductService {
     }
 
     public ProductResponse updateProduct(Long productId, ProductRequest request) {
-        int result = productRepository.updateById(productId, request);
-        Optional<Product> product = productRepository.findById(productId);
-        updateBrandInfo(product.get().getBrand().getId());
-        return ProductResponse.fromEntity(product.get());
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new CodyException(CodyErrorResult.PRODUCT_NOT_FOUND));
+
+        Brand brand = brandRepository.findById(request.getBrandId())
+                .orElseThrow(() -> new CodyException(CodyErrorResult.BRAND_NOT_FOUND));
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CodyException(CodyErrorResult.CATEGORY_NOT_FOUND));
+
+        product.changeInfo(brand, category, request.getPrice());
+        updateBrandInfo(product.getBrand());
+        return ProductResponse.fromEntity(product);
     }
 
     public void deleteProduct(Long productId) {
-        Optional<Product> product = productRepository.findById(productId);
-        Long brandId = product.get().getBrand().getId();
-        productRepository.deleteById(productId);
-        updateBrandInfo(brandId);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new CodyException(CodyErrorResult.PRODUCT_NOT_FOUND));
+
+        product.changeIsDeleted(true);
+        updateBrandInfo(product.getBrand());
     }
 
-    private void updateBrandInfo(Long brandId) {
-        List<Long> productCategory= productRepository.findProductCategoryByBrandId(brandId);
+    private void updateBrandInfo(Brand brand) {
+        List<Long> productCategory = productRepository.findProductCategoryByBrandId(brand.getId());
         List<Category> categories = categoryRepository.findAll();
         boolean isActive = (productCategory.size() == categories.size());
-        brandRepository.updateIsActiveById(brandId, isActive);
+        brand.changeIsActive(isActive);
 
         if (isActive) {
-            List<Product> minProductByBrandId = productRepository.findAllMinProductByBrandAndGroupByCategory(brandId);
+            List<Product> minProductByBrandId = productRepository.findAllMinProductByBrandAndGroupByCategory(brand.getId());
             long minPrice = minProductByBrandId.stream()
                     .mapToLong(Product::getPrice)
                     .sum();
-            brandRepository.updateMinPriceById(brandId, minPrice);
+            brand.changeTotalPirce(minPrice);
         }
     }
 }

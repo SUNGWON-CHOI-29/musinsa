@@ -2,8 +2,6 @@ package com.musinsa.cody.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Brand extends Common{
+public class Brand extends Common {
 
     @Builder
     public Brand(String name, Long totalPrice, boolean isActive, boolean isDeleted) {
@@ -32,4 +30,20 @@ public class Brand extends Common{
 
     @Column(nullable = false)
     private boolean isDeleted;
+
+    public void changeName(String newName) {
+        this.name = newName;
+    }
+
+    public void changeTotalPirce(Long newTotalPrice) {
+        this.totalPrice = newTotalPrice;
+    }
+
+    public void changeIsActive(boolean newIsActive) {
+        this.isActive = newIsActive;
+    }
+
+    public void changeIsDeleted(boolean newIsDeleted) {
+        this.isDeleted = newIsDeleted;
+    }
 }

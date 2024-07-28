@@ -1,7 +1,7 @@
 package com.musinsa.cody.dto;
 
+import com.musinsa.cody.common.util.FormatUtil;
 import com.musinsa.cody.entity.Product;
-import com.musinsa.cody.util.FormatUtil;
 import lombok.Builder;
 import lombok.Getter;
 

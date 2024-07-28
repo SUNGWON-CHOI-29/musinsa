@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Product extends Common{
+public class Product extends Common {
 
     @Builder
     public Product(Brand brand, Category category, Long price, boolean isDeleted) {
@@ -34,4 +34,14 @@ public class Product extends Common{
 
     @Column(nullable = false)
     private boolean isDeleted;
+
+    public void changeInfo(Brand newBrand, Category newCategory, Long newPrice) {
+        this.brand = newBrand;
+        this.category = newCategory;
+        this.price = newPrice;
+    }
+
+    public void changeIsDeleted(boolean newIsDeleted) {
+        this.isDeleted = newIsDeleted;
+    }
 }

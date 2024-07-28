@@ -1,5 +1,8 @@
 package com.musinsa.cody.service;
 
+import com.musinsa.cody.common.constant.CodyErrorResult;
+import com.musinsa.cody.common.exception.CodyException;
+import com.musinsa.cody.common.util.FormatUtil;
 import com.musinsa.cody.dto.BrandMinPriceResponse;
 import com.musinsa.cody.dto.CategoryMinPriceResponse;
 import com.musinsa.cody.dto.PriceRangeResponse;
@@ -7,13 +10,12 @@ import com.musinsa.cody.entity.Brand;
 import com.musinsa.cody.entity.Product;
 import com.musinsa.cody.repository.BrandRepository;
 import com.musinsa.cody.repository.ProductRepository;
-import com.musinsa.cody.util.FormatUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,10 +44,11 @@ public class CodyService {
 
     public BrandMinPriceResponse getBrandMinPriceProducts() {
 
-        Optional<Brand> minPriceBrand = brandRepository.findMinTotalPriceBrand();
-        Long brandId = minPriceBrand.get().getId();
+        Brand minPriceBrand = brandRepository.findMinTotalPriceBrand()
+                .orElseThrow(() -> new CodyException(CodyErrorResult.MIN_PRICE_BRAND_NOT_FOUND));
 
-        List<Product> allMinProductByBrandAndGroupByCategory = productRepository.findAllMinProductByBrandAndGroupByCategory(brandId);
+        List<Product> allMinProductByBrandAndGroupByCategory = productRepository
+                .findAllMinProductByBrandAndGroupByCategory(minPriceBrand.getId());
 
         long total = allMinProductByBrandAndGroupByCategory.stream()
                 .mapToLong(Product::getPrice)
@@ -73,18 +76,21 @@ public class CodyService {
     }
 
     public PriceRangeResponse getCategoryPriceRangeProducts(Long categoryId) {
-        Optional<Product> byMinPriceProductByCategory = productRepository.findByMinPriceProductByCategory(categoryId);
-        Optional<Product> byMaxPriceProductByCategory = productRepository.findByMaxPriceProductByCategory(categoryId);
+        Product byMinPriceProductByCategory = productRepository.findByMinPriceProductByCategory(categoryId)
+                .orElseThrow(() -> new CodyException(CodyErrorResult.MIN_PRICE_PRODUCT_NOT_FOUND));
 
-        Optional<PriceRangeResponse.ProductDto> minProduct = byMinPriceProductByCategory.map(PriceRangeResponse.ProductDto::fromEntity);
-        Optional<PriceRangeResponse.ProductDto> maxProduct = byMaxPriceProductByCategory.map(PriceRangeResponse.ProductDto::fromEntity);
+        Product byMaxPriceProductByCategory = productRepository.findByMaxPriceProductByCategory(categoryId)
+                .orElseThrow(() -> new CodyException(CodyErrorResult.MAX_PRICE_PRODUCT_NOT_FOUND));
 
-        String categoryName = byMinPriceProductByCategory.get().getCategory().getName();
+        PriceRangeResponse.ProductDto minProduct = PriceRangeResponse.ProductDto.fromEntity(byMinPriceProductByCategory);
+        PriceRangeResponse.ProductDto maxProduct = PriceRangeResponse.ProductDto.fromEntity(byMaxPriceProductByCategory);
+
+        String categoryName = byMinPriceProductByCategory.getCategory().getName();
 
         return PriceRangeResponse.builder()
                 .categoryName(categoryName)
-                .minProduct(minProduct.stream().toList())
-                .maxProduct(maxProduct.stream().toList())
+                .minProduct(Arrays.asList(minProduct))
+                .maxProduct(Arrays.asList(maxProduct))
                 .build();
     }
 

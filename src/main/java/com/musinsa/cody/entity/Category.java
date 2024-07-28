@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Category extends Common{
+public class Category extends Common {
 
     @Builder
     public Category(String name) {
