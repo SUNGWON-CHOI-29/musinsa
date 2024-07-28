@@ -14,6 +14,7 @@ public enum CodyErrorResult {
     MIN_PRICE_BRAND_NOT_FOUND(HttpStatus.BAD_REQUEST, "최저가 브랜드 정보를 찾을 수 없습니다."),
     MIN_PRICE_PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST, "카테고리 최저가 상품을 찾을 수 없습니다."),
     MAX_PRICE_PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST, "카테고리 최고가 상품을 찾을 수 없습니다."),
+    DUPLICATED_BRAND_NAME(HttpStatus.BAD_REQUEST, "이미 존재하는 브랜드 명입니다."),
     UNKNOWN_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown Exception"),
     ;
 

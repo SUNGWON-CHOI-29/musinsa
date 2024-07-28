@@ -44,7 +44,7 @@ public class ProductService {
                 .build();
 
         Product saveProduct = productRepository.save(product);
-        updateBrandInfo(brand);
+        updateBrandInfoWithLock(brand.getId());
         return ProductResponse.fromEntity(saveProduct);
     }
 
@@ -60,29 +60,33 @@ public class ProductService {
 
     @Transactional
     public ProductResponse updateProduct(Long productId, ProductRequest request) {
-        Product product = productRepository.findById(productId)
+        Product product = productRepository.findByIdWithLock(productId)
                 .orElseThrow(() -> new CodyException(CodyErrorResult.PRODUCT_NOT_FOUND));
 
         Brand brand = brandRepository.findById(request.getBrandId())
                 .orElseThrow(() -> new CodyException(CodyErrorResult.BRAND_NOT_FOUND));
+
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new CodyException(CodyErrorResult.CATEGORY_NOT_FOUND));
 
         product.changeInfo(brand, category, request.getPrice());
-        updateBrandInfo(product.getBrand());
+        updateBrandInfoWithLock(brand.getId());
         return ProductResponse.fromEntity(product);
     }
 
     @Transactional
     public void deleteProduct(Long productId) {
-        Product product = productRepository.findById(productId)
+        Product product = productRepository.findByIdWithLock(productId)
                 .orElseThrow(() -> new CodyException(CodyErrorResult.PRODUCT_NOT_FOUND));
 
         product.changeIsDeleted(true);
-        updateBrandInfo(product.getBrand());
+        updateBrandInfoWithLock(product.getBrand().getId());
     }
 
-    private void updateBrandInfo(Brand brand) {
+    private void updateBrandInfoWithLock(Long brandId) {
+        Brand brand = brandRepository.findByIdWithLock(brandId)
+                .orElseThrow(() -> new CodyException(CodyErrorResult.BRAND_NOT_FOUND));
+
         List<Long> productCategory = productRepository.findProductCategoryByBrandId(brand.getId());
         List<Category> categories = categoryRepository.findAll();
         boolean isActive = (productCategory.size() == categories.size());
