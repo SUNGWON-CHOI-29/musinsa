@@ -38,7 +38,7 @@ public class ProductService {
                 .build();
 
         Product saveProduct = productRepository.save(product);
-
+        updateBrandInfo(brand.get().getId());
         return ProductResponse.fromEntity(saveProduct);
     }
 
@@ -55,17 +55,29 @@ public class ProductService {
     public ProductResponse updateProduct(Long productId, ProductRequest request) {
         int result = productRepository.updateById(productId, request);
         Optional<Product> product = productRepository.findById(productId);
-
+        updateBrandInfo(product.get().getBrand().getId());
         return ProductResponse.fromEntity(product.get());
     }
 
     public void deleteProduct(Long productId) {
+        Optional<Product> product = productRepository.findById(productId);
+        Long brandId = product.get().getBrand().getId();
         productRepository.deleteById(productId);
+        updateBrandInfo(brandId);
     }
 
     private void updateBrandInfo(Long brandId) {
-        // brandId, categoryId로 그룹핑했을 때 카테고리사이즈와 일치하는지,
+        List<Long> productCategory= productRepository.findProductCategoryByBrandId(brandId);
+        List<Category> categories = categoryRepository.findAll();
+        boolean isActive = (productCategory.size() == categories.size());
+        brandRepository.updateIsActiveById(brandId, isActive);
 
-        // activate 상태라면 minPrice 업데이트
+        if (isActive) {
+            List<Product> minProductByBrandId = productRepository.findAllMinProductByBrandAndGroupByCategory(brandId);
+            long minPrice = minProductByBrandId.stream()
+                    .mapToLong(Product::getPrice)
+                    .sum();
+            brandRepository.updateMinPriceById(brandId, minPrice);
+        }
     }
 }

@@ -41,4 +41,22 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
            WHERE b.id = :id
            """)
     int updateNameById(@Param("id") Long id, @Param("name") String name);
+
+    @Modifying
+    @Transactional
+    @Query("""
+           UPDATE Brand b
+           SET b.isActive = :isActive
+           WHERE b.id = :id
+           """)
+    int updateIsActiveById(@Param("id") Long id, @Param("isActive") boolean isActive);
+
+    @Modifying
+    @Transactional
+    @Query("""
+           UPDATE Brand b
+           SET b.totalPrice = :minPrice
+           WHERE b.id = :id
+           """)
+    int updateMinPriceById(@Param("id") Long id, @Param("minPrice") Long minPrice);
 }

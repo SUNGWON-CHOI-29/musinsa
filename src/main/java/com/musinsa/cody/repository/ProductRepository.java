@@ -113,4 +113,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
            WHERE p.id = :id
            """)
     void deleteById(@Param("id") Long id);
+
+    @Query("""
+           SELECT count(p)
+           FROM Product p
+           WHERE p.brand.id = :brandId
+           AND p.isDeleted  = false
+           GROUP BY p.category.id
+           """)
+    List<Long> findProductCategoryByBrandId(@Param("brandId") Long brandId);
 }
