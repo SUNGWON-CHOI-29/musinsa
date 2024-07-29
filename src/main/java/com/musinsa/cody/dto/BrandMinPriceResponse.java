@@ -16,6 +16,7 @@ public class BrandMinPriceResponse {
     private BrandMinPrice brandMinPrice;
 
     @Builder
+    @Getter
     public static class BrandMinPrice {
         @JsonProperty("브랜드")
         private String brandName;

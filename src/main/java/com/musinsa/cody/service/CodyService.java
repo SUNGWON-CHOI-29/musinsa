@@ -93,5 +93,4 @@ public class CodyService {
                 .maxProduct(Arrays.asList(maxProduct))
                 .build();
     }
-
 }

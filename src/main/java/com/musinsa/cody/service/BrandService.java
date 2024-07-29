@@ -6,8 +6,6 @@ import com.musinsa.cody.dto.BrandListResponse;
 import com.musinsa.cody.dto.BrandResponse;
 import com.musinsa.cody.entity.Brand;
 import com.musinsa.cody.repository.BrandRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -23,18 +21,11 @@ public class BrandService {
 
     private final BrandRepository brandRepository;
 
-    @PersistenceContext
-    private EntityManager em;
-
     @Transactional
     public BrandResponse createBrand(String name) {
         try {
-            Brand brand = Brand.builder()
-                    .name(name)
-                    .isActive(false)
-                    .isDeleted(false)
-                    .totalPrice(0L)
-                    .build();
+            Brand brand = new Brand(name);
+
             Brand savedBrand = brandRepository.save(brand);
             return BrandResponse.fromEntity(savedBrand);
         } catch (DataIntegrityViolationException e) {

@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Category extends Common {
 
-    @Builder
     public Category(String name) {
         this.name = name;
     }

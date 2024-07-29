@@ -14,19 +14,19 @@ import lombok.NoArgsConstructor;
 public class Product extends Common {
 
     @Builder
-    public Product(Brand brand, Category category, Long price, boolean isDeleted) {
+    public Product(Brand brand, Category category, Long price) {
         this.brand = brand;
         this.category = category;
         this.price = price;
-        this.isDeleted = isDeleted;
+        this.isDeleted = false;
     }
 
     @ManyToOne
-    @JoinColumn(name = "brand_id")
+    @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     @Column(nullable = false)

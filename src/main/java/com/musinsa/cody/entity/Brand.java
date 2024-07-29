@@ -11,12 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Brand extends Common {
 
-    @Builder
-    public Brand(String name, Long totalPrice, boolean isActive, boolean isDeleted) {
+    public Brand(String name) {
         this.name = name;
-        this.totalPrice = totalPrice;
-        this.isActive = isActive;
-        this.isDeleted = isDeleted;
+        this.totalPrice = 0L;
+        this.isActive = false;
+        this.isDeleted = false;
     }
 
     @Column(unique = true)

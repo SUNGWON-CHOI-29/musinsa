@@ -40,7 +40,6 @@ public class ProductService {
                 .price(request.getPrice())
                 .brand(brand)
                 .category(category)
-                .isDeleted(false)
                 .build();
 
         Product saveProduct = productRepository.save(product);
