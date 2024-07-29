@@ -36,7 +36,7 @@ public class BrandServiceTest {
         // given
         doThrow(DataIntegrityViolationException.class)
                 .when(brandRepository).save(any(Brand.class));
-        
+
         // when
         CodyException exception = assertThrows(CodyException.class, () -> {
             brandService.createBrand("brandName");
@@ -64,9 +64,9 @@ public class BrandServiceTest {
         // given
         when(brandRepository.findAll())
                 .thenReturn(Arrays.asList(
-                                new Brand("brandA"),
-                                new Brand("brandB")
-                        ));
+                        new Brand("brandA"),
+                        new Brand("brandB")
+                ));
         // when
         BrandListResponse brands = brandService.getBrands();
         // then
@@ -84,7 +84,7 @@ public class BrandServiceTest {
 
         // when
         CodyException exception = assertThrows(CodyException.class, () -> {
-            brandService.updateBrandName(1L,"brandA");
+            brandService.updateBrandName(1L, "brandA");
         });
 
         // then
@@ -99,7 +99,7 @@ public class BrandServiceTest {
 
         // when
         CodyException exception = assertThrows(CodyException.class, () -> {
-            brandService.updateBrandName(1L,"brandA");
+            brandService.updateBrandName(1L, "brandA");
         });
 
         // then
